@@ -1,0 +1,168 @@
+<?php
+// Verificar si se ha enviado el formulario
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  // Obtener los datos del formulario
+  $nombre = $_POST["nombre"];
+  $apellidos = $_POST["apellidos"];
+  $identificacion = $_POST["identificacion"];
+  $fecha_reclamo = $_POST["fecha_reclamo"];
+
+  // Generar el código único
+  $codigo = generateCode();
+
+  // Verificar si el formulario ha sido enviado previamente
+  if (isset($_COOKIE["formulario_enviado"])) {
+    // El formulario ya ha sido enviado previamente
+    // Puedes mostrar un mensaje de error o redirigir a otra página
+    header("Location: error.html");
+    exit;
+  }
+
+  // Guardar el código en una cookie para evitar envíos repetidos
+  setcookie("formulario_enviado", "true", time() + (60 * 60 * 24 * 3)); // Caduca en 3 días
+
+  // Redirigir a la página de agradecimiento y pasar el código como parámetro en la URL
+  header("Location: agradecimiento.html?codigo=" . urlencode($codigo));
+  exit;
+}
+
+// Función para generar el código único
+function generateCode() {
+  $letters = range('A', 'Z');
+  $numbers = range(0, 9);
+
+  // Obtener dos letras aleatorias
+  $random_letters = array_rand($letters, 2);
+  $code_letters = $letters[$random_letters[0]] . $letters[$random_letters[1]];
+
+  // Obtener dos números aleatorios
+  $random_numbers = array_rand($numbers, 2);
+  $code_numbers = $numbers[$random_numbers[0]] . $numbers[$random_numbers[1]];
+
+  // Combinar las letras y números para formar el código completo
+  $code = $code_letters . $code_numbers;
+
+  return $code;
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+
+
+  <title>Página de Promoción de Ferrero Rocher</title>
+  <style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Satisfy&display=swap"> 
+    body {
+  font-family: 'Satisfy', cursive;
+}
+</style>
+
+    <style>
+    body {
+      background-color: #ffffff;
+      color: #4d4d4d;
+      font-family: 'Satisfy', cursive;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #c5b03b;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #000000;
+      font-size: 28px;
+    }
+
+    img {
+      max-width: 200px;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    section {
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      color: #000000;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    footer {
+      background-color: #332424;
+      color: #ffffff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    a {
+      color: #eee4e0;
+      text-decoration: none;
+    }
+  </style>
+   <script>
+    function generarCodigo() {
+      // Generar código único
+      var codigo = Math.random().toString(36).substr(2, 4).toUpperCase() + Math.floor(Math.random() * 100);
+
+      // Redireccionar a la página de agradecimiento
+      window.location.href = "agradecimiento.html?codigo=" + codigo;
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Bienvenido a la Promoción de Ferrero Rocher Blanco</h1>
+    <img src="E:\Respuestas Formulario Ferrero Rocher\logo.png" alt="E:\Respuestas Formulario Ferrero Rocher\logo.png">
+  </header>
+
+  <main>
+    <section>
+      <h2>Ferrero Rocher Blanco</h2>
+      <p>¡Bienvenido/a a nuestra página de promoción exclusiva de Ferrero Rocher Chocolate Blanco! Estamos encantados de presentarte nuestro nuevo sabor que combina la suavidad del chocolate blanco con la dulzura del arequipe y la exquisita textura de las nueces y avellanas de la mejor calidad.</p>
+      <p>Al registrarte en nuestro formulario, recibirás un bono de descuento del 5% para disfrutar de tus productos Ferrero Rocher favoritos. ¡No pierdas esta oportunidad de saborear un verdadero placer de chocolate y vivir una experiencia inolvidable con Ferrero Rocher Chocolate Blanco!</p>
+    </section>
+
+    <section>
+      <h2>Formulario de Registro</h2>
+      <p>Para reclamar tu bono de descuento del 5% en la compra de productos Ferrero Rocher, completa el siguiente formulario:</p>
+      <form onsubmit="generarCodigo(); return false;">
+        <!-- Campos del formulario -->
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        
+        <label for="apellidos">Apellidos:</label>
+        <input type="text" id="apellidos" name="apellidos" required>
+        
+        <label for="identificacion">Identificación:</label>
+        <input type="text" id="identificacion" name="identificacion" required>
+        
+        <label for="fecha_reclamo">Fecha de reclamo:</label>
+        <input type="date" id="fecha_reclamo" name="fecha_reclamo" required>
+        <label for="codigo"> Codigo de tú Factura Electronica</label>
+        <input type="text" name="codigo" pattern="[A-Za-z]{2}[0-9]{2}" required>
+          
+        <input type="submit" value="Enviar">
+      </form>
+    </section>      
+  </main>
+
+  <footer>
+    <p>Promoción válida por tiempo limitado. Para más información, contáctanos en <a href="mailto:info@ferrerorocher.com">info@ferrerorocher.com</a></p>
+  </footer>
+</body>
+</html>
